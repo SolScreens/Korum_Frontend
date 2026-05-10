@@ -21,25 +21,25 @@ export default function ResultsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center">
+      <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-4 border-brand-primary border-t-transparent animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F5]">
-      <header className="bg-white border-b border-[#E4E2DC] sticky top-0 z-10">
+    <div className="min-h-screen bg-page">
+      <header className="bg-white border-b border-border sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center gap-3">
           {room && (
             <Link
               to={`/groups/${room.group_id}`}
-              className="text-[#9A7060] hover:text-brand-primary text-sm font-body"
+              className="text-ink-muted hover:text-brand-primary text-sm font-body"
             >
               ← Group
             </Link>
           )}
-          <h1 className="font-heading font-semibold text-xl text-[#2A1200]">
+          <h1 className="font-heading font-semibold text-xl text-ink">
             Group results
           </h1>
         </div>
@@ -48,11 +48,11 @@ export default function ResultsPage() {
       <main className="max-w-lg mx-auto px-4 py-6">
         {movies.length === 0 ? (
           <div className="text-center py-16">
-            <p className="font-body text-[#9A7060]">No results yet</p>
+            <p className="font-body text-ink-muted">No results yet</p>
           </div>
         ) : (
           <>
-            <p className="font-body text-sm text-[#9A7060] mb-4">
+            <p className="font-body text-sm text-ink-muted mb-4">
               Ranked by how many of you approved each movie
             </p>
 
@@ -60,7 +60,7 @@ export default function ResultsPage() {
               {movies.map((movie, i) => (
                 <div
                   key={movie.tmdb_id}
-                  className="bg-card rounded-card border border-[#E4E2DC] p-4 flex gap-4 items-start"
+                  className="bg-card rounded-card border border-border p-4 flex gap-4 items-start"
                 >
                   {/* Rank */}
                   <div className="shrink-0 w-8 text-center">
@@ -71,7 +71,7 @@ export default function ResultsPage() {
                     ) : i === 2 ? (
                       <span className="text-2xl">🥉</span>
                     ) : (
-                      <span className="font-heading font-semibold text-lg text-[#9A7060]">
+                      <span className="font-heading font-semibold text-lg text-ink-muted">
                         {i + 1}
                       </span>
                     )}
@@ -88,10 +88,10 @@ export default function ResultsPage() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-heading font-semibold text-[#2A1200] text-base leading-tight">
+                    <h3 className="font-heading font-semibold text-ink text-base leading-tight">
                       {movie.title}
                     </h3>
-                    <p className="font-body text-xs text-[#9A7060] mt-0.5">
+                    <p className="font-body text-xs text-ink-muted mt-0.5">
                       {movie.release_year}
                       {movie.runtime && ` · ${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`}
                     </p>
@@ -100,7 +100,7 @@ export default function ResultsPage() {
                         {movie.genres.slice(0, 2).map((g) => (
                           <span
                             key={g}
-                            className="text-xs font-body text-[#6B6966] bg-white border border-[#E4E2DC] px-2 py-0.5 rounded-chip"
+                            className="text-xs font-body text-ink-secondary bg-white border border-border px-2 py-0.5 rounded-chip"
                           >
                             {g}
                           </span>

@@ -2,8 +2,8 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useGroup } from '../hooks/useGroups';
 import { useRoom } from '../hooks/useRoom';
 import { useAuth } from '../hooks/useAuth';
-import MemberAvatar from '../components/MemberAvatar';
-import StatusBadge from '../components/StatusBadge';
+import MemberAvatar from '../components/shared/MemberAvatar/MemberAvatar';
+import StatusBadge from '../components/rooms/StatusBadge/StatusBadge';
 import { getErrorMessage } from '../lib/api';
 import { useState } from 'react';
 
@@ -34,17 +34,17 @@ export default function GroupPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center">
-        <p className="font-body text-[#9A7060]">Loading…</p>
+      <div className="min-h-screen bg-page flex items-center justify-center">
+        <p className="font-body text-ink-muted">Loading…</p>
       </div>
     );
   }
 
   if (error || !group) {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center">
+      <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="text-center">
-          <p className="font-body text-[#6B6966]">Group not found</p>
+          <p className="font-body text-ink-secondary">Group not found</p>
           <Link to="/" className="font-body text-sm text-brand-primary mt-2 block">
             ← Back home
           </Link>
@@ -54,14 +54,14 @@ export default function GroupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F5]">
+    <div className="min-h-screen bg-page">
       {/* Header */}
-      <header className="bg-white border-b border-[#E4E2DC] sticky top-0 z-10">
+      <header className="bg-white border-b border-border sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center gap-3">
-          <Link to="/" className="text-[#9A7060] hover:text-brand-primary transition-colors">
+          <Link to="/" className="text-ink-muted hover:text-brand-primary transition-colors">
             ←
           </Link>
-          <h1 className="font-heading font-semibold text-xl text-[#2A1200] truncate">
+          <h1 className="font-heading font-semibold text-xl text-ink truncate">
             {group.name}
           </h1>
         </div>
@@ -70,23 +70,23 @@ export default function GroupPage() {
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
         {/* Members */}
         <section>
-          <h2 className="font-heading font-semibold text-lg text-[#2A1200] mb-3">
+          <h2 className="font-heading font-semibold text-lg text-ink mb-3">
             Members
           </h2>
-          <div className="bg-card rounded-card border border-[#E4E2DC] divide-y divide-[#E4E2DC]">
+          <div className="bg-card rounded-card border border-border divide-y divide-border">
             {group.members.map((m) => (
               <div key={m.user_id} className="flex items-center gap-3 px-4 py-3">
                 <MemberAvatar user={m.user} size="md" />
                 <div className="min-w-0 flex-1">
-                  <p className="font-body font-medium text-sm text-[#2A1200] truncate">
+                  <p className="font-body font-medium text-sm text-ink truncate">
                     {m.user.display_name}
                   </p>
-                  <p className="font-body text-xs text-[#9A7060] truncate">
+                  <p className="font-body text-xs text-ink-muted truncate">
                     {m.user.email}
                   </p>
                 </div>
                 {m.role === 'admin' && (
-                  <span className="text-xs font-body font-medium text-brand-secondary bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-chip shrink-0">
+                  <span className="text-xs font-body font-medium text-brand-primary bg-tint-primary border border-border px-2.5 py-1 rounded-chip shrink-0">
                     Admin
                   </span>
                 )}
@@ -98,7 +98,7 @@ export default function GroupPage() {
         {/* Start a room */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-heading font-semibold text-lg text-[#2A1200]">
+            <h2 className="font-heading font-semibold text-lg text-ink">
               Decision rooms
             </h2>
           </div>
@@ -106,7 +106,7 @@ export default function GroupPage() {
           <button
             onClick={handleStartRoom}
             disabled={creating}
-            className="w-full py-4 rounded-card border-2 border-dashed border-[#EAD8CE] text-brand-primary font-body font-medium hover:bg-orange-50 hover:border-brand-primary disabled:opacity-60 transition-all duration-150"
+            className="w-full py-4 rounded-card border-2 border-dashed border-border-warm text-brand-primary font-body font-medium hover:bg-surface hover:border-brand-primary disabled:opacity-60 transition-all duration-150"
           >
             {creating ? 'Starting…' : '+ Start a new room'}
           </button>
@@ -117,7 +117,7 @@ export default function GroupPage() {
 
           {/* Past rooms placeholder */}
           <div className="mt-3 text-center py-8">
-            <p className="font-body text-sm text-[#9A7060]">
+            <p className="font-body text-sm text-ink-muted">
               Past rooms will appear here
             </p>
           </div>

@@ -15,7 +15,7 @@ export default function PreferenceChip({ label, selected, onToggle }: Props) {
         ${
           selected
             ? 'bg-brand-primary text-white border-brand-primary'
-            : 'bg-white text-[#6B6966] border-[#E4E2DC] hover:border-[#D44A20] hover:text-[#D44A20]'
+            : 'bg-white text-ink-secondary border-border hover:border-brand-primary hover:text-brand-primary'
         }
       `}
     >

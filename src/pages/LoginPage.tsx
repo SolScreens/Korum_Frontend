@@ -1,23 +1,47 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getErrorMessage } from '../lib/api';
+import AuthTabs from '../components/auth/AuthTabs/AuthTabs';
+
+const inputClass =
+  'w-full px-4 py-3 rounded-[14px] border border-border-warm bg-page font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const activeTab = location.pathname === '/signup' ? 'signup' : 'login';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const switchTab = (tab: 'login' | 'signup') => {
+    setError(null);
+    setEmail('');
+    setPassword('');
+    setDisplayName('');
+    navigate(tab === 'login' ? '/login' : '/signup');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeTab === 'signup' && password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
     setError(null);
     setIsLoading(true);
     try {
-      await login({ email, password });
+      if (activeTab === 'login') {
+        await login({ email, password });
+      } else {
+        await signup({ email, password, display_name: displayName || undefined });
+      }
       navigate('/');
     } catch (err) {
       setError(getErrorMessage(err));
@@ -27,28 +51,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-page flex items-start justify-center pt-32 px-4 pb-4">
       <div className="w-full max-w-sm">
-        {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="font-heading font-semibold text-4xl text-[#2A1200]">
-            Korum
-          </h1>
-          <p className="font-body text-[#9A7060] mt-1 text-sm">
-            Every group, one answer.
-          </p>
+          <h1 className="font-heading font-semibold text-4xl text-ink">Korum</h1>
+          <p className="font-body text-ink-muted mt-1 text-sm">Every group, one answer.</p>
         </div>
 
-        <div className="bg-white rounded-card border border-[#E4E2DC] p-6 shadow-sm">
-          <h2 className="font-heading font-semibold text-xl text-[#2A1200] mb-5">
-            Welcome back
-          </h2>
+        <div className="bg-white rounded-card border border-border p-6 shadow-sm">
+          <AuthTabs activeTab={activeTab} onChange={switchTab} />
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 mt-5">
+            {activeTab === 'signup' && (
+              <div>
+                <label className="block font-body text-sm font-medium text-ink mb-1.5">Name</label>
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Your name"
+                  autoComplete="name"
+                  className={inputClass}
+                />
+              </div>
+            )}
+
             <div>
-              <label className="block font-body text-sm font-medium text-[#2A1200] mb-1.5">
-                Email
-              </label>
+              <label className="block font-body text-sm font-medium text-ink mb-1.5">Email</label>
               <input
                 type="email"
                 value={email}
@@ -56,22 +85,20 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-[14px] border border-[#EAD8CE] bg-[#FFF8F5] font-body text-sm text-[#2A1200] placeholder:text-[#9A7060] focus:outline-none focus:border-brand-primary transition-colors"
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block font-body text-sm font-medium text-[#2A1200] mb-1.5">
-                Password
-              </label>
+              <label className="block font-body text-sm font-medium text-ink mb-1.5">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                autoComplete="current-password"
-                placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-[14px] border border-[#EAD8CE] bg-[#FFF8F5] font-body text-sm text-[#2A1200] placeholder:text-[#9A7060] focus:outline-none focus:border-brand-primary transition-colors"
+                autoComplete={activeTab === 'login' ? 'current-password' : 'new-password'}
+                placeholder={activeTab === 'login' ? '••••••••' : 'Min. 8 characters'}
+                className={inputClass}
               />
             </div>
 
@@ -84,19 +111,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 rounded-btn bg-brand-primary text-white font-heading font-semibold text-base hover:bg-[#FF7A45] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150"
+              className="w-full py-3 rounded-btn bg-brand-primary text-white font-heading font-semibold text-base hover:bg-brand-hover disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-150"
             >
-              {isLoading ? 'Signing in…' : 'Sign in'}
+              {isLoading
+                ? activeTab === 'login' ? 'Signing in…' : 'Creating account…'
+                : activeTab === 'login' ? 'Sign in' : 'Create account'}
             </button>
           </form>
         </div>
-
-        <p className="text-center font-body text-sm text-[#9A7060] mt-4">
-          Don't have an account?{' '}
-          <Link to="/signup" className="text-brand-primary font-medium hover:underline">
-            Sign up
-          </Link>
-        </p>
       </div>
     </div>
   );

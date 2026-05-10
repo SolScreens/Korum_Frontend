@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecommendations, usePreferences } from '../hooks/useRoom';
-import MovieCard from '../components/MovieCard';
-import ProgressDots from '../components/ProgressDots';
+import MovieCard from '../components/rooms/MovieCard/MovieCard';
+import ProgressDots from '../components/shared/ProgressDots/ProgressDots';
 import type { SwipeDirection } from '../types';
 
 const MIN_APPROVALS = 5;
@@ -48,18 +48,18 @@ export default function SwipePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] flex flex-col items-center justify-center gap-3">
+      <div className="min-h-screen bg-page flex flex-col items-center justify-center gap-3">
         <div className="w-10 h-10 rounded-full border-4 border-brand-primary border-t-transparent animate-spin" />
-        <p className="font-body text-[#9A7060] text-sm">Claude is finding your movies…</p>
+        <p className="font-body text-ink-muted text-sm">Claude is finding your movies…</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center">
+      <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="text-center px-4">
-          <p className="font-body text-[#6B6966]">{error}</p>
+          <p className="font-body text-ink-secondary">{error}</p>
           <button
             onClick={fetchRecommendations}
             className="mt-3 font-body text-sm text-brand-primary hover:underline"
@@ -72,15 +72,15 @@ export default function SwipePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF8F5]">
+    <div className="min-h-screen bg-page">
       {/* Header */}
-      <header className="bg-white border-b border-[#E4E2DC] sticky top-0 z-10">
+      <header className="bg-white border-b border-border sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="font-heading font-semibold text-xl text-[#2A1200]">
+            <h1 className="font-heading font-semibold text-xl text-ink">
               Swipe your picks
             </h1>
-            <span className="font-body text-xs text-[#9A7060]">
+            <span className="font-body text-xs text-ink-muted">
               {approvalCount} liked
             </span>
           </div>
@@ -92,10 +92,10 @@ export default function SwipePage() {
         {isDone || canFinish ? (
           <div className="text-center py-12">
             <div className="text-4xl mb-3">🎉</div>
-            <h2 className="font-heading font-semibold text-xl text-[#2A1200]">
+            <h2 className="font-heading font-semibold text-xl text-ink">
               You've liked {approvalCount} movie{approvalCount !== 1 ? 's' : ''}
             </h2>
-            <p className="font-body text-sm text-[#9A7060] mt-1">
+            <p className="font-body text-sm text-ink-muted mt-1">
               {isDone
                 ? 'You have seen all recommendations'
                 : 'You can finish now or keep going'}
@@ -104,7 +104,7 @@ export default function SwipePage() {
         ) : (
           <div className="space-y-4">
             {/* Counter */}
-            <p className="font-body text-sm text-[#9A7060] text-center">
+            <p className="font-body text-sm text-ink-muted text-center">
               {currentIndex + 1} of {movies.length}
             </p>
 
@@ -118,7 +118,7 @@ export default function SwipePage() {
 
             {/* Hint */}
             {approvalCount < MIN_APPROVALS && (
-              <p className="text-center font-body text-xs text-[#9A7060]">
+              <p className="text-center font-body text-xs text-ink-muted">
                 Like at least {MIN_APPROVALS - approvalCount} more to finish
               </p>
             )}
@@ -128,12 +128,12 @@ export default function SwipePage() {
 
       {/* Sticky CTA — only show when enough approvals */}
       {canFinish && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E4E2DC] p-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border p-4">
           <div className="max-w-lg mx-auto">
             <button
               onClick={handleDone}
               disabled={isSubmitting}
-              className="w-full py-4 rounded-btn bg-brand-primary text-white font-heading font-semibold text-lg hover:bg-[#FF7A45] disabled:opacity-60 transition-all duration-150"
+              className="w-full py-4 rounded-btn bg-brand-primary text-white font-heading font-semibold text-lg hover:bg-brand-hover disabled:opacity-60 transition-all duration-150"
             >
               {isSubmitting ? 'Submitting…' : "I'm done →"}
             </button>

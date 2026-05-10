@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 
 // Pages
 import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
 import HomePage from './pages/HomePage';
 import GroupPage from './pages/GroupPage';
 import PreferencePage from './pages/PreferencePage';
@@ -19,7 +18,7 @@ function PrivateRoute({ children }: { children: ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center">
+      <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-4 border-brand-primary border-t-transparent animate-spin" />
       </div>
     );
@@ -54,7 +53,7 @@ function AppRoutes() {
         path="/signup"
         element={
           <PublicRoute>
-            <SignupPage />
+            <LoginPage />
           </PublicRoute>
         }
       />

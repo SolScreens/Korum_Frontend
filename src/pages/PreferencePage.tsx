@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePreferences } from '../hooks/useRoom';
-import PreferenceChip from '../components/PreferenceChip';
-import ProgressDots from '../components/ProgressDots';
+import PreferenceChip from '../components/shared/PreferenceChip/PreferenceChip';
+import ProgressDots from '../components/shared/ProgressDots/ProgressDots';
 import { getErrorMessage } from '../lib/api';
 
 const GENRES = [
@@ -57,18 +57,18 @@ export default function PreferencePage() {
   };
 
   const sectionClass = 'space-y-3';
-  const labelClass = 'font-heading font-semibold text-base text-[#2A1200]';
+  const labelClass = 'font-heading font-semibold text-base text-ink';
   const chipRow = 'flex flex-wrap gap-2';
 
   return (
-    <div className="min-h-screen bg-[#FFF8F5]">
-      <header className="bg-white border-b border-[#E4E2DC] sticky top-0 z-10">
+    <div className="min-h-screen bg-page">
+      <header className="bg-white border-b border-border sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="font-heading font-semibold text-xl text-[#2A1200]">
+            <h1 className="font-heading font-semibold text-xl text-ink">
               Your preferences
             </h1>
-            <span className="font-body text-xs text-[#9A7060]">All optional</span>
+            <span className="font-body text-xs text-ink-muted">All optional</span>
           </div>
           <ProgressDots total={3} current={0} />
         </div>
@@ -108,7 +108,7 @@ export default function PreferencePage() {
             value={mood}
             onChange={(e) => setMood(e.target.value)}
             placeholder="Or describe your mood in your own words…"
-            className="w-full px-4 py-3 rounded-[14px] border border-[#EAD8CE] bg-white font-body text-sm text-[#2A1200] placeholder:text-[#9A7060] focus:outline-none focus:border-brand-primary transition-colors"
+            className="w-full px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
           />
         </div>
 
@@ -123,9 +123,9 @@ export default function PreferencePage() {
               min={1900}
               max={CURRENT_YEAR}
               placeholder="From"
-              className="flex-1 px-4 py-3 rounded-[14px] border border-[#EAD8CE] bg-white font-body text-sm text-[#2A1200] placeholder:text-[#9A7060] focus:outline-none focus:border-brand-primary transition-colors"
+              className="flex-1 px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
             />
-            <span className="font-body text-[#9A7060] text-sm">to</span>
+            <span className="font-body text-ink-muted text-sm">to</span>
             <input
               type="number"
               value={yearMax}
@@ -133,7 +133,7 @@ export default function PreferencePage() {
               min={1900}
               max={CURRENT_YEAR}
               placeholder="To"
-              className="flex-1 px-4 py-3 rounded-[14px] border border-[#EAD8CE] bg-white font-body text-sm text-[#2A1200] placeholder:text-[#9A7060] focus:outline-none focus:border-brand-primary transition-colors"
+              className="flex-1 px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
             />
           </div>
         </div>
@@ -170,7 +170,7 @@ export default function PreferencePage() {
       </main>
 
       {/* Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E4E2DC] p-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border p-4">
         <div className="max-w-lg mx-auto">
           {error && (
             <p className="font-body text-sm text-red-500 mb-2">{error}</p>
@@ -178,7 +178,7 @@ export default function PreferencePage() {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="w-full py-4 rounded-btn bg-brand-primary text-white font-heading font-semibold text-lg hover:bg-[#FF7A45] disabled:opacity-60 transition-all duration-150"
+            className="w-full py-4 rounded-btn bg-brand-primary text-white font-heading font-semibold text-lg hover:bg-brand-hover disabled:opacity-60 transition-all duration-150"
           >
             {isLoading ? 'Loading your feed…' : 'See my recommendations →'}
           </button>

@@ -1,4 +1,4 @@
-import type { User } from '../types';
+import type { User } from '../../../types';
 
 interface Props {
   user: Pick<User, 'display_name' | 'avatar_url'>;
@@ -12,14 +12,14 @@ const sizes = {
   lg: 'w-12 h-12 text-base',
 };
 
-// Deterministic color from name
+// Deterministic color from name — palette-derived dark shades, all readable with white text
 const colors = [
-  'bg-orange-400',
-  'bg-amber-400',
-  'bg-rose-400',
-  'bg-teal-400',
-  'bg-violet-400',
-  'bg-sky-400',
+  'bg-[#231123]', // midnight_violet
+  'bg-[#82204a]', // dark_raspberry
+  'bg-[#602e60]', // midnight_violet.600
+  'bg-[#335353]', // dark_cyan.300
+  'bg-[#4e142d]', // dark_raspberry.300
+  'bg-[#446f6f]', // dark_cyan.400
 ];
 
 function getColor(name: string) {

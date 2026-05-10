@@ -1,4 +1,4 @@
-import type { RoomStatus } from '../types';
+import type { RoomStatus } from '../../../types';
 
 interface Props {
   status: RoomStatus;
@@ -8,18 +8,18 @@ interface Props {
 const config: Record<RoomStatus, { label: string; className: string; dot: string }> = {
   collecting: {
     label: 'Collecting',
-    className: 'bg-amber-50 text-amber-700 border border-amber-200',
-    dot: 'bg-amber-400',
+    className: 'bg-tint-primary text-ink-secondary border border-border',
+    dot: 'bg-ink-muted',
   },
   swiping: {
     label: 'Swiping',
-    className: 'bg-orange-50 text-brand-primary border border-orange-200',
-    dot: 'bg-brand-primary',
+    className: 'bg-brand-primary text-white border border-brand-primary',
+    dot: 'bg-white',
   },
   done: {
     label: 'Done',
-    className: 'bg-green-50 text-green-700 border border-green-200',
-    dot: 'bg-green-500',
+    className: 'bg-tint-success text-ink border border-brand-secondary',
+    dot: 'bg-brand-secondary',
   },
 };
 

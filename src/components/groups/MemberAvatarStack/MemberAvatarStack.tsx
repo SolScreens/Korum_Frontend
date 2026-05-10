@@ -1,5 +1,5 @@
-import MemberAvatar from './MemberAvatar';
-import type { GroupMember } from '../types';
+import MemberAvatar from '../../shared/MemberAvatar/MemberAvatar';
+import type { GroupMember } from '../../../types';
 
 interface Props {
   members: GroupMember[];
@@ -21,7 +21,7 @@ export default function MemberAvatarStack({ members, max = 4 }: Props) {
         />
       ))}
       {overflow > 0 && (
-        <div className="w-8 h-8 rounded-full bg-[#E4E2DC] ring-2 ring-white flex items-center justify-center text-xs font-body font-medium text-[#6B6966]">
+        <div className="w-8 h-8 rounded-full bg-border ring-2 ring-white flex items-center justify-center text-xs font-body font-medium text-ink-secondary">
           +{overflow}
         </div>
       )}

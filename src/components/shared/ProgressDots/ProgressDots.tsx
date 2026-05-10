@@ -14,7 +14,7 @@ export default function ProgressDots({ total, current }: Props) {
               ? 'w-5 h-2 bg-brand-primary'
               : i < current
               ? 'w-2 h-2 bg-brand-primary opacity-40'
-              : 'w-2 h-2 bg-[#E4E2DC]'
+              : 'w-2 h-2 bg-border'
           }`}
         />
       ))}
