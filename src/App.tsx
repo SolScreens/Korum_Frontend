@@ -24,7 +24,7 @@ function PrivateRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  return <>{children}</>;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 }
 
 function PublicRoute({ children }: { children: ReactNode }) {
@@ -92,12 +92,16 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/rooms/:roomId/lobby"
+        path="/rooms/:roomId"
         element={
           <PrivateRoute>
             <RoomPage />
           </PrivateRoute>
         }
+      />
+      <Route
+        path="/rooms/:roomId/lobby"
+        element={<Navigate to="../" relative="path" replace />}
       />
       <Route
         path="/rooms/:roomId/results"

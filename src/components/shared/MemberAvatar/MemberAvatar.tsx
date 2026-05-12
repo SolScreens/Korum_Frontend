@@ -40,8 +40,9 @@ function getInitials(name: string) {
 }
 
 export default function MemberAvatar({ user, size = 'md', className = '' }: Props) {
-  const color = getColor(user.display_name || '?');
-  const initials = getInitials(user.display_name || '?');
+  const name = user?.display_name || '?';
+  const color = getColor(name);
+  const initials = getInitials(name);
 
   return (
     <div

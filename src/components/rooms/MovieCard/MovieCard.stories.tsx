@@ -48,12 +48,10 @@ const minimalMovie: Movie = {
   rating: null,
 };
 
-export const FullDetails: Story = { args: { movie: fullMovie, isTop: true } };
-export const NoPoster: Story = { args: { movie: minimalMovie, isTop: true } };
-export const NotTopCard: Story = { args: { movie: fullMovie, isTop: false } };
+export const FullDetails: Story = { args: { movie: fullMovie } };
+export const NoPoster: Story = { args: { movie: minimalMovie } };
 export const ManyGenres: Story = {
   args: {
     movie: { ...fullMovie, genres: ['Crime', 'Drama', 'Thriller', 'Mystery'] },
-    isTop: true,
   },
 };

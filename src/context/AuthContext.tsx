@@ -6,6 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from 'react';
+import { flushSync } from 'react-dom';
 import api, { getErrorMessage } from '../lib/api';
 import type { User, LoginRequest, SignupRequest, AuthResponse } from '../types';
 
@@ -13,7 +14,6 @@ import type { User, LoginRequest, SignupRequest, AuthResponse } from '../types';
 
 interface AuthContextValue {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (data: LoginRequest) => Promise<void>;
@@ -23,8 +23,6 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-// ─── Storage keys ─────────────────────────────────────────────────────────────
-const TOKEN_KEY = 'korum_token';
 const USER_KEY = 'korum_user';
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
@@ -39,18 +37,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   });
 
-  const [token, setToken] = useState<string | null>(
-    () => localStorage.getItem(TOKEN_KEY)
-  );
-
-  // On mount: validate token is still good by fetching /users/me
-  const [isLoading, setIsLoading] = useState(!!token);
+  // Always validate the cookie on mount
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
     api
       .get<User>('/users/me')
       .then((res) => {
@@ -58,31 +48,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem(USER_KEY, JSON.stringify(res.data));
       })
       .catch(() => {
-        // Token is invalid/expired — clear everything
-        localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
-        setToken(null);
         setUser(null);
       })
       .finally(() => setIsLoading(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount only
+  }, []);
 
-  const persist = (authRes: AuthResponse) => {
-    localStorage.setItem(TOKEN_KEY, authRes.access_token);
-    localStorage.setItem(USER_KEY, JSON.stringify(authRes.user));
-    setToken(authRes.access_token);
-    setUser(authRes.user);
+  const persist = (user: User) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    flushSync(() => setUser(user));
   };
 
   const login = useCallback(async (data: LoginRequest) => {
     const res = await api.post<AuthResponse>('/auth/login', data);
-    persist(res.data);
+    persist({ id: res.data.user_id, email: res.data.email, display_name: res.data.display_name, avatar_url: null, created_at: '' });
   }, []);
 
   const signup = useCallback(async (data: SignupRequest) => {
     const res = await api.post<AuthResponse>('/auth/signup', data);
-    persist(res.data);
+    persist({ id: res.data.user_id, email: res.data.email, display_name: res.data.display_name, avatar_url: null, created_at: '' });
   }, []);
 
   const logout = useCallback(async () => {
@@ -91,9 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // Even if backend call fails, clear local state
     } finally {
-      localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      setToken(null);
       setUser(null);
     }
   }, []);
@@ -102,9 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
-        token,
         isLoading,
-        isAuthenticated: !!token && !!user,
+        isAuthenticated: !!user,
         login,
         signup,
         logout,

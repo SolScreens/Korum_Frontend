@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { usePreferences } from '../hooks/useRoom';
 import PreferenceChip from '../components/shared/PreferenceChip/PreferenceChip';
-import ProgressDots from '../components/shared/ProgressDots/ProgressDots';
 import { getErrorMessage } from '../lib/api';
 
 const GENRES = [
@@ -50,140 +49,125 @@ export default function PreferencePage() {
         release_year_min: yearMin ? parseInt(yearMin) : undefined,
         release_year_max: yearMax ? parseInt(yearMax) : undefined,
       });
-      navigate(`/rooms/${roomId}/swipe`);
+      navigate(`/rooms/${roomId}`);
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
 
-  const sectionClass = 'space-y-3';
   const labelClass = 'font-heading font-semibold text-base text-ink';
   const chipRow = 'flex flex-wrap gap-2';
 
   return (
-    <div className="min-h-screen bg-page">
-      <header className="bg-white border-b border-border sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <h1 className="font-heading font-semibold text-xl text-ink">
-              Your preferences
-            </h1>
-            <span className="font-body text-xs text-ink-muted">All optional</span>
-          </div>
-          <ProgressDots total={3} current={0} />
+    <div className="h-screen flex flex-col bg-page">
+
+      {/* Header — sticks to top, same as other pages */}
+      <header className="shrink-0 bg-white border-b border-border z-10">
+        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+          <h1 className="font-heading font-semibold text-xl text-ink">Your preferences</h1>
+          <span className="font-body text-xs text-ink-muted">All optional</span>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 space-y-7 pb-32">
-        {/* Genres */}
-        <div className={sectionClass}>
-          <h2 className={labelClass}>What genres are you up for?</h2>
-          <div className={chipRow}>
-            {GENRES.map((g) => (
-              <PreferenceChip
-                key={g}
-                label={g}
-                selected={genres.includes(g)}
-                onToggle={() => toggle(genres, setGenres, g)}
-              />
-            ))}
-          </div>
-        </div>
+      {/* Scrollable form content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-lg mx-auto px-4 py-6 space-y-8">
 
-        {/* Mood */}
-        <div className={sectionClass}>
-          <h2 className={labelClass}>What's the vibe?</h2>
-          <div className={chipRow}>
-            {MOODS.map((m) => (
-              <PreferenceChip
-                key={m}
-                label={m}
-                selected={mood === m}
-                onToggle={() => setMood(mood === m ? '' : m)}
-              />
-            ))}
+          <div className="space-y-3">
+            <h2 className={labelClass}>What genres are you up for?</h2>
+            <div className={chipRow}>
+              {GENRES.map((g) => (
+                <PreferenceChip
+                  key={g} label={g}
+                  selected={genres.includes(g)}
+                  onToggle={() => toggle(genres, setGenres, g)}
+                />
+              ))}
+            </div>
           </div>
-          <input
-            type="text"
-            value={mood}
-            onChange={(e) => setMood(e.target.value)}
-            placeholder="Or describe your mood in your own words…"
-            className="w-full px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
-          />
-        </div>
 
-        {/* Release year */}
-        <div className={sectionClass}>
-          <h2 className={labelClass}>Release year range</h2>
-          <div className="flex gap-3 items-center">
+          <div className="space-y-3">
+            <h2 className={labelClass}>What's the vibe?</h2>
+            <div className={chipRow}>
+              {MOODS.map((m) => (
+                <PreferenceChip
+                  key={m} label={m}
+                  selected={mood === m}
+                  onToggle={() => setMood(mood === m ? '' : m)}
+                />
+              ))}
+            </div>
             <input
-              type="number"
-              value={yearMin}
-              onChange={(e) => setYearMin(e.target.value)}
-              min={1900}
-              max={CURRENT_YEAR}
-              placeholder="From"
-              className="flex-1 px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
-            />
-            <span className="font-body text-ink-muted text-sm">to</span>
-            <input
-              type="number"
-              value={yearMax}
-              onChange={(e) => setYearMax(e.target.value)}
-              min={1900}
-              max={CURRENT_YEAR}
-              placeholder="To"
-              className="flex-1 px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
+              type="text"
+              value={mood}
+              onChange={(e) => setMood(e.target.value)}
+              placeholder="Or describe your mood in your own words…"
+              className="w-full px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
             />
           </div>
-        </div>
 
-        {/* Languages */}
-        <div className={sectionClass}>
-          <h2 className={labelClass}>Language preference</h2>
-          <div className={chipRow}>
-            {LANGUAGES.map((l) => (
-              <PreferenceChip
-                key={l}
-                label={l}
-                selected={languages.includes(l)}
-                onToggle={() => toggle(languages, setLanguages, l)}
+          <div className="space-y-3">
+            <h2 className={labelClass}>Release year range</h2>
+            <div className="flex gap-3 items-center">
+              <input
+                type="number" value={yearMin}
+                onChange={(e) => setYearMin(e.target.value)}
+                min={1900} max={CURRENT_YEAR} placeholder="From"
+                className="flex-1 px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
               />
-            ))}
-          </div>
-        </div>
-
-        {/* Platforms */}
-        <div className={sectionClass}>
-          <h2 className={labelClass}>Streaming platforms</h2>
-          <div className={chipRow}>
-            {PLATFORMS.map((p) => (
-              <PreferenceChip
-                key={p}
-                label={p}
-                selected={platforms.includes(p)}
-                onToggle={() => toggle(platforms, setPlatforms, p)}
+              <span className="font-body text-ink-muted text-sm">to</span>
+              <input
+                type="number" value={yearMax}
+                onChange={(e) => setYearMax(e.target.value)}
+                min={1900} max={CURRENT_YEAR} placeholder="To"
+                className="flex-1 px-4 py-3 rounded-[14px] border border-border-warm bg-white font-body text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-brand-primary transition-colors"
               />
-            ))}
+            </div>
           </div>
-        </div>
-      </main>
 
-      {/* Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border p-4">
+          <div className="space-y-3">
+            <h2 className={labelClass}>Language preference</h2>
+            <div className={chipRow}>
+              {LANGUAGES.map((l) => (
+                <PreferenceChip
+                  key={l} label={l}
+                  selected={languages.includes(l)}
+                  onToggle={() => toggle(languages, setLanguages, l)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h2 className={labelClass}>Streaming platforms</h2>
+            <div className={chipRow}>
+              {PLATFORMS.map((p) => (
+                <PreferenceChip
+                  key={p} label={p}
+                  selected={platforms.includes(p)}
+                  onToggle={() => toggle(platforms, setPlatforms, p)}
+                />
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Footer — sticks to bottom, same pattern as header */}
+      <footer className="shrink-0 bg-white border-t border-border px-4 py-4">
         <div className="max-w-lg mx-auto">
-          {error && (
-            <p className="font-body text-sm text-red-500 mb-2">{error}</p>
-          )}
+          {error && <p className="font-body text-sm text-red-500 mb-2">{error}</p>}
           <button
             onClick={handleSubmit}
             disabled={isLoading}
             className="w-full py-4 rounded-btn bg-brand-primary text-white font-heading font-semibold text-lg hover:bg-brand-hover disabled:opacity-60 transition-all duration-150"
           >
-            {isLoading ? 'Loading your feed…' : 'See my recommendations →'}
+            {isLoading ? 'Submitting…' : 'Submit preferences →'}
           </button>
         </div>
-      </div>
+      </footer>
+
     </div>
   );
 }

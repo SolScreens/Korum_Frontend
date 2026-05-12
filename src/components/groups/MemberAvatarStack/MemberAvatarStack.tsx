@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function MemberAvatarStack({ members, max = 4 }: Props) {
-  const visible = members.slice(0, max);
+  const visible = members.filter((m) => m.user).slice(0, max);
   const overflow = members.length - max;
 
   return (

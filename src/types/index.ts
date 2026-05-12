@@ -11,7 +11,9 @@ export interface User {
 export interface AuthResponse {
   access_token: string;
   token_type: string;
-  user: User;
+  user_id: string;
+  email: string;
+  display_name: string;
 }
 
 export interface SignupRequest {
@@ -59,16 +61,19 @@ export interface Room {
   created_by: string;
   status: RoomStatus;
   invite_code: string | null;
+  movie_pool: Movie[];
   movies: Movie[];
   created_at: string;
   expires_at: string;
   member_statuses?: MemberStatus[];
 }
 
+export type MemberPreferenceStatus = 'pending' | 'swiping' | 'done';
+
 export interface MemberStatus {
   user_id: string;
   display_name: string;
-  is_ready: boolean;
+  status: MemberPreferenceStatus;
   swipe_count: number;
 }
 
@@ -87,7 +92,7 @@ export interface Preferences {
   languages: string[];
   platforms: string[];
   swipes: Record<string, SwipeDirection>;
-  is_ready: boolean;
+  status: MemberPreferenceStatus;
   updated_at: string;
 }
 
@@ -102,7 +107,7 @@ export interface SubmitPreferencesRequest {
 
 export interface UpdateSwipesRequest {
   swipes: Record<string, SwipeDirection>;
-  is_ready?: boolean;
+  status?: MemberPreferenceStatus;
 }
 
 // ─── Movies ──────────────────────────────────────────────────────────────────

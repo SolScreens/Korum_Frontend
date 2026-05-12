@@ -28,7 +28,7 @@ export default function LoginPage() {
     navigate(tab === 'login' ? '/login' : '/signup');
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (activeTab === 'signup' && password.length < 8) {
       setError('Password must be at least 8 characters');
@@ -36,18 +36,15 @@ export default function LoginPage() {
     }
     setError(null);
     setIsLoading(true);
-    try {
-      if (activeTab === 'login') {
-        await login({ email, password });
-      } else {
-        await signup({ email, password, display_name: displayName || undefined });
-      }
-      navigate('/');
-    } catch (err) {
-      setError(getErrorMessage(err));
-    } finally {
-      setIsLoading(false);
-    }
+
+    const authCall = activeTab === 'login'
+      ? login({ email, password })
+      : signup({ email, password, display_name: displayName || undefined });
+
+    authCall
+      .then(() => navigate('/'))
+      .catch((err) => setError(getErrorMessage(err)))
+      .finally(() => setIsLoading(false));
   };
 
   return (
