@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import { flushSync } from 'react-dom';
-import api, { getErrorMessage } from '../lib/api';
+import api, { getErrorMessage, TOKEN_KEY } from '../lib/api';
 import type { User, LoginRequest, SignupRequest, AuthResponse } from '../types';
 
 // ─── Context shape ────────────────────────────────────────────────────────────
@@ -59,25 +59,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     flushSync(() => setUser(user));
   };
 
+  const persistAuth = (res: AuthResponse) => {
+    localStorage.setItem(TOKEN_KEY, res.access_token);
+    persist({ id: res.user_id, email: res.email, display_name: res.display_name, avatar_url: null, created_at: '' });
+  };
+
   const login = useCallback(async (data: LoginRequest) => {
     const res = await api.post<AuthResponse>('/auth/login', data);
-    persist({ id: res.data.user_id, email: res.data.email, display_name: res.data.display_name, avatar_url: null, created_at: '' });
+    persistAuth(res.data);
   }, []);
 
   const signup = useCallback(async (data: SignupRequest) => {
     const res = await api.post<AuthResponse>('/auth/signup', data);
-    persist({ id: res.data.user_id, email: res.data.email, display_name: res.data.display_name, avatar_url: null, created_at: '' });
+    persistAuth(res.data);
   }, []);
 
   const logout = useCallback(async () => {
-    try {
-      await api.post('/auth/logout');
-    } catch {
-      // Even if backend call fails, clear local state
-    } finally {
-      localStorage.removeItem(USER_KEY);
-      setUser(null);
-    }
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    setUser(null);
   }, []);
 
   return (

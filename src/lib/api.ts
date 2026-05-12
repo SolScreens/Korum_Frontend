@@ -1,12 +1,20 @@
 import axios, { AxiosError } from 'axios';
 import type { ApiError } from '../types';
 
+export const TOKEN_KEY = 'korum_token';
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+// ─── Request interceptor: attach token ───────────────────────────────────────
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
 });
 
 // ─── Response interceptor: handle 401 globally ───────────────────────────────
